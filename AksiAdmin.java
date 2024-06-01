@@ -22,7 +22,7 @@ public class AksiAdmin extends Aksi {
         System.exit(0);
     }
 
-    //method lihat film
+    // method lihat film
     @Override
     public void lihatListFilm() {
         System.out.println("Daftar Film:");
@@ -32,7 +32,7 @@ public class AksiAdmin extends Aksi {
         }
     }
 
-    //method tambah film
+    // method tambah film
     public void tambahFilm() {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Nama Film: ");
