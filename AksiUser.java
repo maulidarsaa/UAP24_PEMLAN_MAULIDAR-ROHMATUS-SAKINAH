@@ -31,8 +31,8 @@ public class AksiUser extends Aksi {
     public void lihatListFilm() {
         System.out.println("Daftar Film:");
         for (Film film : Film.getFilms().values()) {
-            System.out.println("Nama: " + film.getName() + ", Deskripsi: " + film.getDescription() +
-                    ", Harga: " + film.getPrice() + ", Stok: " + film.getStock());
+            System.out.println("Nama: " + film.getName() + " - Deskripsi: " + film.getDescription() +
+                    " - Harga: " + film.getPrice() + " - Stok: " + film.getStock());
         }
     }
 
@@ -44,59 +44,67 @@ public class AksiUser extends Aksi {
     //method pesan film
     public void pesanFilm() {
 
-        try (Scanner scanner = new Scanner(System.in)) {
-            //Input Nama Film
-            System.out.print("Nama film: ");
-            String namaFilm = scanner.nextLine();
+        Scanner scanner = new Scanner(System.in);
 
-            //Input Jumlah Tiket
-            System.out.print("Jumlah tiket: ");
-            int jumlah = scanner.nextInt();
-            scanner.nextLine();
+        //Input Nama Film
+        System.out.print("Nama film: ");
+        String namaFilm = scanner.nextLine();
 
-            Film film = Film.getFilms().get(namaFilm);
-            //Jika film tidak ada di-list
-            if (film == null) {
-                System.out.println("Film tidak ditemukan.");
-                return;
-            }
+        //Input Jumlah Tiket
+        System.out.print("Jumlah tiket: ");
+        int jumlah = scanner.nextInt();
+        scanner.nextLine();
 
-            if (film.getStock() < jumlah) {
-            //Jika stok tiket film abis
-                System.out.println("Stok tiket tidak mencukupi.");
-                return;
-            }
-
-            //Mengkalikan harga film dengan jumlah yang akan dibeli
-            double totalHarga = film.getPrice() * jumlah;
-            //Jika saldo user lagi tanggal tua
-            if (Akun.getCurrentUser().getSaldo() < totalHarga) {
-                System.out.println("Saldo tidak mencukupi.");
-                return;
-            }
-
-            //Mengurangi jumlah stok film dengan yang jumlah yang telah dibeli user
-            film.setStock(film.getStock() - jumlah);
-            Akun.getCurrentUser().setSaldo(Akun.getCurrentUser().getSaldo() - totalHarga);
-
-            //Menambahkan film dan jumlah yang dipesan user ke histori (agar bisa dilihat di "lihat pesanan")
-            Akun.getCurrentUser().addPesanan(film, jumlah);
-            System.out.println("Tiket berhasil dipesan. Total harga: " + totalHarga);
+        Film film = Film.getFilms().get(namaFilm);
+        //Jika film tidak ada di-list
+        if (film == null) {
+            System.out.println("Film tidak ditemukan.");
+            return;
         }
+
+        if (film.getStock() < jumlah) {
+        //Jika stok tiket film abis
+            System.out.println("Stok tiket tidak mencukupi.");
+            return;
+        }
+
+        //Mengkalikan harga film dengan jumlah yang akan dibeli
+        double totalHarga = film.getPrice() * jumlah;
+        //Jika saldo user lagi tanggal tua
+        if (Akun.getCurrentUser().getSaldo() < totalHarga) {
+            System.out.println("Saldo tidak mencukupi.");
+            return;
+        }
+
+        //Mengurangi jumlah stok film dengan yang jumlah yang telah dibeli user
+        film.setStock(film.getStock() - jumlah);
+        Akun.getCurrentUser().setSaldo(Akun.getCurrentUser().getSaldo() - totalHarga);
+
+        //Menambahkan film dan jumlah yang dipesan user ke histori (agar bisa dilihat di "lihat pesanan")
+        Akun.getCurrentUser().addPesanan(film, jumlah);
+        System.out.println("Tiket berhasil dipesan. Total harga: " + totalHarga);
     }
 
     //method lihat pesanan
     public void lihatPesanan() {
         Map<String, Pesanan> pesanan = Akun.getCurrentUser().getPesanan();
-        //Jika user belum pernah beli (gapunya history)
+        // Jika user belum pernah beli (tidak punya riwayat)
         if (pesanan.isEmpty()) {
             System.out.println("Anda belum pernah memesan tiket.");
         } else {
-            //Jika user pernah beli
+            // Jika user pernah beli
             System.out.println("Daftar Pesanan:");
+            double totalHargaSemuaPesanan = 0;
             for (Pesanan p : pesanan.values()) {
-                System.out.println("Film: " + p.getFilm().getName() + ", Jumlah: " + p.getKuantitas());
+                String namaFilm = p.getFilm().getName();
+                int jumlah = p.getKuantitas();
+                double hargaPerTiket = p.getFilm().getPrice();
+                double totalHarga = jumlah * hargaPerTiket;
+                totalHargaSemuaPesanan += totalHarga;
+                System.out.println("Film: " + namaFilm + ", Jumlah: " + jumlah + ", Total Harga: " + totalHarga);
             }
+            System.out.println("Total Harga Semua Pesanan: " + totalHargaSemuaPesanan);
         }
     }
+    
 }
