@@ -26,7 +26,7 @@ public class AksiUser extends Aksi {
         System.exit(0);
     }
 
-    //method lihat film
+    // method lihat film
     @Override
     public void lihatListFilm() {
         System.out.println("Daftar Film:");
@@ -36,12 +36,12 @@ public class AksiUser extends Aksi {
         }
     }
 
-    //method lihat saldo
+    // method lihat saldo
     public void lihatSaldo() {
         System.out.println("Saldo Anda: " + Akun.getCurrentUser().getSaldo());
     }
 
-    //method pesan film
+    // method pesan film
     public void pesanFilm() {
 
         Scanner scanner = new Scanner(System.in);
@@ -56,36 +56,36 @@ public class AksiUser extends Aksi {
         scanner.nextLine();
 
         Film film = Film.getFilms().get(namaFilm);
-        //Jika film tidak ada di-list
+        // jika film tidak ada di-list
         if (film == null) {
             System.out.println("Film tidak ditemukan.");
             return;
         }
 
         if (film.getStock() < jumlah) {
-        //Jika stok tiket film abis
+        // jika stok tiket film abis
             System.out.println("Stok tiket tidak mencukupi.");
             return;
         }
 
-        //Mengkalikan harga film dengan jumlah yang akan dibeli
+        // mengkalikan harga film dengan jumlah yang akan dibeli
         double totalHarga = film.getPrice() * jumlah;
-        //Jika saldo user lagi tanggal tua
+        // jika saldo user lagi tanggal tua
         if (Akun.getCurrentUser().getSaldo() < totalHarga) {
             System.out.println("Saldo tidak mencukupi.");
             return;
         }
 
-        //Mengurangi jumlah stok film dengan yang jumlah yang telah dibeli user
+        // mengurangi jumlah stok film dengan yang jumlah yang telah dibeli user
         film.setStock(film.getStock() - jumlah);
         Akun.getCurrentUser().setSaldo(Akun.getCurrentUser().getSaldo() - totalHarga);
 
-        //Menambahkan film dan jumlah yang dipesan user ke histori (agar bisa dilihat di "lihat pesanan")
+        // menambahkan film dan jumlah yang dipesan user ke histori (agar bisa dilihat di "lihat pesanan")
         Akun.getCurrentUser().addPesanan(film, jumlah);
         System.out.println("Tiket berhasil dipesan. Total harga: " + totalHarga);
     }
 
-    //method lihat pesanan
+    // method lihat pesanan
     public void lihatPesanan() {
         Map<String, Pesanan> pesanan = Akun.getCurrentUser().getPesanan();
         // Jika user belum pernah beli (tidak punya riwayat)
@@ -94,16 +94,13 @@ public class AksiUser extends Aksi {
         } else {
             // Jika user pernah beli
             System.out.println("Daftar Pesanan:");
-            double totalHargaSemuaPesanan = 0;
             for (Pesanan p : pesanan.values()) {
                 String namaFilm = p.getFilm().getName();
                 int jumlah = p.getKuantitas();
                 double hargaPerTiket = p.getFilm().getPrice();
                 double totalHarga = jumlah * hargaPerTiket;
-                totalHargaSemuaPesanan += totalHarga;
                 System.out.println("Film: " + namaFilm + ", Jumlah: " + jumlah + ", Total Harga: " + totalHarga);
             }
-            System.out.println("Total Harga Semua Pesanan: " + totalHargaSemuaPesanan);
         }
     }
     
